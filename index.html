@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Maintenance Project - Team Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .info-card .label {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .info-card .value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #00d4ff;
+            border-bottom: 2px solid rgba(0,212,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .agent-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #00d4ff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.2);
+        }
+
+        .agent-card.security {
+            border-left-color: #ff6b6b;
+        }
+
+        .agent-card.security:hover {
+            box-shadow: 0 10px 30px rgba(255,107,107,0.2);
+        }
+
+        .agent-card.data {
+            border-left-color: #4ecdc4;
+        }
+
+        .agent-card.data:hover {
+            box-shadow: 0 10px 30px rgba(78,205,196,0.2);
+        }
+
+        .agent-card.qa {
+            border-left-color: #ffe66d;
+        }
+
+        .agent-card.qa:hover {
+            box-shadow: 0 10px 30px rgba(255,230,109,0.2);
+        }
+
+        .agent-card h3 {
+            font-size: 1em;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .agent-role {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .status-pending {
+            background: rgba(255,255,255,0.1);
+            color: #888;
+        }
+
+        .status-active {
+            background: rgba(0,212,255,0.2);
+            color: #00d4ff;
+        }
+
+        .status-review {
+            background: rgba(255,230,109,0.2);
+            color: #ffe66d;
+        }
+
+        .status-approved {
+            background: rgba(78,205,196,0.2);
+            color: #4ecdc4;
+        }
+
+        .status-rejected {
+            background: rgba(255,107,107,0.2);
+            color: #ff6b6b;
+        }
+
+        .phase-timeline {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .phase {
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .phase.active {
+            border-color: #00d4ff;
+            background: rgba(0,212,255,0.1);
+        }
+
+        .phase.completed {
+            border-color: #4ecdc4;
+            background: rgba(78,205,196,0.1);
+        }
+
+        .phase.pending {
+            opacity: 0.5;
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .phase-title {
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .phase-number {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+
+        .phase-tasks {
+            list-style: none;
+            font-size: 0.85em;
+        }
+
+        .phase-tasks li {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .phase-tasks li::before {
+            content: '•';
+            color: #888;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+
+        .milestone-list {
+            list-style: none;
+        }
+
+        .milestone-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border-left: 3px solid #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .milestone-item.completed {
+            border-left-color: #4ecdc4;
+        }
+
+        .milestone-item.current {
+            border-left-color: #00d4ff;
+            background: rgba(0,212,255,0.05);
+        }
+
+        .milestone-date {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .milestone-status {
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .milestone-status.completed {
+            background: rgba(78,205,196,0.2);
+            color: #4ecdc4;
+        }
+
+        .milestone-status.current {
+            background: rgba(0,212,255,0.2);
+            color: #00d4ff;
+        }
+
+        .milestone-status.pending {
+            background: rgba(255,255,255,0.1);
+            color: #888;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            color: #fff;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .feedback-section {
+            background: rgba(255,230,109,0.05);
+            border: 1px solid rgba(255,230,109,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .feedback-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .feedback-author {
+            font-weight: bold;
+            color: #ffe66d;
+            margin-bottom: 5px;
+        }
+
+        .update-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,212,255,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: #4ecdc4;
+            color: #000;
+            font-weight: bold;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 AR Maintenance Support System</h1>
+            <p>Project Management Dashboard | COMP5067 | University Project</p>
+            <div class="project-info">
+                <div class="info-card">
+                    <div class="label">Deadline</div>
+                    <div class="value">12 May 2026</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Weighting</div>
+                    <div class="value">70%</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">TRL Target</div>
+                    <div class="value">TRL 3</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Team Size</div>
+                    <div class="value">9 Roles</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-grid" style="margin-bottom: 20px;">
+            <div class="stat-card">
+                <div class="stat-number" id="total-agents">9</div>
+                <div class="stat-label">Total Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completed-tasks">0</div>
+                <div class="stat-label">Completed Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pending-review">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="overall-progress">0%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>🤖 Agent Team</h2>
+                <div class="agents-grid" id="agents-container">
+                    <!-- Agents will be dynamically populated -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Project Phases</h2>
+                <div class="phase-timeline" id="phases-container">
+                    <!-- Phases will be dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>🎯 Milestones</h2>
+            <ul class="milestone-list" id="milestones-container">
+                <!-- Milestones will be dynamically populated -->
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📊 Current Focus</h2>
+            <div id="current-focus">
+                <p style="color: #888; text-align: center; padding: 40px;">
+                    🎯 <strong>Phase 1: Project Setup & Briefing</strong><br><br>
+                    Waiting for user confirmation to begin agent work...
+                </p>
+            </div>
+        </div>
+
+        <div class="update-controls">
+            <button class="btn btn-primary" onclick="showPhaseControls()">Manage Phases</button>
+            <button class="btn btn-secondary" onclick="showAgentStatus()">Update Agent Status</button>
+            <button class="btn btn-secondary" onclick="showFeedback()">View QA Feedback</button>
+            <button class="btn btn-secondary" onclick="exportProgress()">Export Progress</button>
+        </div>
+
+        <footer>
+            <p>AR Maintenance Support System Dashboard | Built for COMP5067 Group Project</p>
+            <p>Last updated: <span id="last-update">Never</span></p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Project State
+        let projectState = {
+            agents: [
+                { id: 1, name: "Software Engineer 1", role: "AR/Frontend", type: "engineering", status: "pending", currentTask: "Review project brief", progress: 0 },
+                { id: 2, name: "Software Engineer 2", role: "Backend/Database", type: "engineering", status: "pending", currentTask: "Review project brief", progress: 0 },
+                { id: 3, name: "Security Specialist 1", role: "Security Architecture", type: "security", status: "pending", currentTask: "Review project brief", progress: 0 },
+                { id: 4, name: "Security Specialist 2", role: "Security Implementation", type: "security", status: "pending", currentTask: "Review project brief", progress: 0 },
+                { id: 5, name: "Data Analyst 1", role: "Dashboard/Visualization", type: "data", status: "pending", currentTask: "Review project brief", progress: 0 },
+                { id: 6, name: "Data Analyst 2", role: "Analytics/Algorithms", type: "data", status: "pending", currentTask: "Review project brief", progress: 0 },
+                { id: 7, name: "QA - Software Engineering", role: "Quality Assurance", type: "qa", status: "pending", currentTask: "Awaiting work to review", progress: 0 },
+                { id: 8, name: "QA - Security", role: "Quality Assurance", type: "qa", status: "pending", currentTask: "Awaiting work to review", progress: 0 },
+                { id: 9, name: "QA - Data Analytics", role: "Quality Assurance", type: "qa", status: "pending", currentTask: "Awaiting work to review", progress: 0 }
+            ],
+            phases: [
+                { id: 1, title: "Project Setup & Briefing", number: "Phase 1", tasks: ["Project brief review", "Requirements finalization", "Team structure setup", "Dashboard creation"], completed: true, current: true },
+                { id: 2, title: "Phase 2: Initial Plans", number: "Phase 2", tasks: ["Role-specific plans", "Tech stack decisions", "Architecture design", "QA Review"], completed: false, current: false },
+                { id: 3, title: "Phase 3: Architecture Design", number: "Phase 3", tasks: ["System architecture", "Database design", "Security architecture", "Data flow diagrams", "QA Review"], completed: false, current: false },
+                { id: 4, title: "Phase 4: Implementation", number: "Phase 4", tasks: ["AR frontend development", "Backend API development", "Security implementation", "Dashboard development", "QA Review"], completed: false, current: false },
+                { id: 5, title: "Phase 5: Integration", number: "Phase 5", tasks: ["Component integration", "End-to-end testing", "Documentation", "QA Review"], completed: false, current: false },
+                { id: 6, title: "Phase 6: Finalization", number: "Phase 6", tasks: ["Final report", "Presentation slides", "Video recording", "Individual contribution forms"], completed: false, current: false }
+            ],
+            milestones: [
+                { id: 1, title: "Project Kickoff", date: "19 Apr 2026", status: "completed", description: "Project brief received and understood" },
+                { id: 2, title: "Dashboard Created", date: "19 Apr 2026", status: "completed", description: "Project management dashboard available" },
+                { id: 3, title: "Initial Plans Approval", date: "Pending", status: "pending", description: "All 6 role agents submit initial plans" },
+                { id: 4, title: "Architecture Finalized", date: "Pending", status: "pending", description: "System architecture approved by all" },
+                { id: 5, title: "Prototype TRL 3", date: "Pending", status: "pending", description: "Functional prototype at Technology Readiness Level 3" },
+                { id: 6, title: "Documentation Complete", date: "Pending", status: "pending", description: "All report sections written" },
+                { id: 7, title: "Submission Ready", date: "12 May 2026", status: "pending", description: "All deliverables ready for submission" }
+            ],
+            feedback: []
+        };
+
+        // Initialize Dashboard
+        function initDashboard() {
+            renderAgents();
+            renderPhases();
+            renderMilestones();
+            updateStats();
+            updateLastUpdate();
+        }
+
+        // Render Agents
+        function renderAgents() {
+            const container = document.getElementById('agents-container');
+            container.innerHTML = projectState.agents.map(agent => `
+                <div class="agent-card ${agent.type}">
+                    <h3>${agent.name}</h3>
+                    <div class="agent-role">${agent.role}</div>
+                    <div style="margin-bottom: 10px;">
+                        <span class="status-badge status-${agent.status}">${agent.status.toUpperCase()}</span>
+                    </div>
+                    <div style="font-size: 0.85em; color: #888; margin-bottom: 8px;">
+                        Current: ${agent.currentTask}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${agent.progress}%"></div>
+                    </div>
+                    <div style="font-size: 0.75em; color: #666; margin-top: 5px;">
+                        ${agent.progress}% Complete
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Phases
+        function renderPhases() {
+            const container = document.getElementById('phases-container');
+            container.innerHTML = projectState.phases.map(phase => {
+                const completedTasks = phase.tasks.filter((_, i, arr) => 
+                    phase.completed || (i < arr.length - 1 && phase.completed)
+                ).length;
+                const progress = phase.completed ? 100 : (phase.current ? 50 : 0);
+                
+                return `
+                    <div class="phase ${phase.completed ? 'completed' : phase.current ? 'active' : 'pending'}">
+                        <div class="phase-header">
+                            <span class="phase-title">${phase.title}</span>
+                            <span class="phase-number">${phase.number}</span>
+                        </div>
+                        <ul class="phase-tasks">
+                            ${phase.tasks.map(task => `
+                                <li>${task}</li>
+                            `).join('')}
+                        </ul>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Milestones
+        function renderMilestones() {
+            const container = document.getElementById('milestones-container');
+            container.innerHTML = projectState.milestones.map(milestone => `
+                <li class="milestone-item ${milestone.status}">
+                    <div>
+                        <strong>${milestone.title}</strong>
+                        <div style="font-size: 0.85em; color: #888; margin-top: 3px;">${milestone.description}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="milestone-date">${milestone.date}</div>
+                        <span class="milestone-status ${milestone.status}">${milestone.status.toUpperCase()}</span>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        // Update Stats
+        function updateStats() {
+            const completedTasks = projectState.agents.filter(a => a.status === 'approved' || a.status === 'completed').length;
+            const pendingReview = projectState.agents.filter(a => a.status === 'review').length;
+            const overallProgress = Math.round(projectState.agents.reduce((sum, a) => sum + a.progress, 0) / projectState.agents.length);
+
+            document.getElementById('completed-tasks').textContent = completedTasks;
+            document.getElementById('pending-review').textContent = pendingReview;
+            document.getElementById('overall-progress').textContent = overallProgress + '%';
+        }
+
+        // Update Last Update
+        function updateLastUpdate() {
+            document.getElementById('last-update').textContent = new Date().toLocaleString();
+        }
+
+        // Show Notifications
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification' + (isError ? ' error' : '');
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+
+        // Show Phase Controls (placeholder)
+        function showPhaseControls() {
+            showNotification('Phase controls coming soon...');
+        }
+
+        // Show Agent Status (placeholder)
+        function showAgentStatus() {
+            showNotification('Agent status update coming soon...');
+        }
+
+        // Show Feedback (placeholder)
+        function showFeedback() {
+            showNotification('QA feedback section coming soon...');
+        }
+
+        // Export Progress (placeholder)
+        function exportProgress() {
+            const data = JSON.stringify(projectState, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'project-progress.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Progress exported!');
+        }
+
+        // Auto-update every 30 seconds
+        setInterval(() => {
+            updateStats();
+            updateLastUpdate();
+        }, 30000);
+
+        // Initialize on load
+        initDashboard();
+    </script>
+</body>
+</html>
