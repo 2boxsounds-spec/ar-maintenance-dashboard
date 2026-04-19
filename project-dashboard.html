@@ -550,6 +550,13 @@
             </div>
         </div>
 
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>📋 Agent Plans Summary</h2>
+            <div id="agent-plans-summary">
+                <!-- Agent plans summary will be dynamically populated -->
+            </div>
+        </div>
+
         <div class="card">
             <h2>📊 Current Focus</h2>
             <div id="current-focus">
@@ -640,6 +647,7 @@
             renderMilestones();
             renderFeedback();
             renderPendingActions();
+            renderAgentPlansSummary();
             updateStats();
             updateLastUpdate();
         }
@@ -812,11 +820,112 @@
             `).join('');
         }
 
+        // Render Agent Plans Summary
+        function renderAgentPlansSummary() {
+            const container = document.getElementById('agent-plans-summary');
+            
+            const plans = [
+                {
+                    agent: "🔧 Software Engineer 1 (AR/Frontend)",
+                    status: "✅ Approved",
+                    keyPoints: [
+                        "AR.js + A-Frame for marker-based AR",
+                        "Bournemouth Buses context: Bus Bay 1-10, Depot Walls",
+                        "Fault types: Brake, Door, HVAC, Engine systems",
+                        "Enhanced features: In-AR selection, 3D menus, Optimistic UI",
+                        "UML diagrams: Use Case, Class, Activity ×2, Deployment"
+                    ]
+                },
+                {
+                    agent: "🔧 Software Engineer 2 (Backend/Database)",
+                    status: "✅ Approved",
+                    keyPoints: [
+                        "Node.js + Express.js backend",
+                        "SQLite + Sequelize ORM database",
+                        "Bus-specific schema: Vehicle IDs (Bus 204, 156), Bay locations",
+                        "API endpoints: REST + WebSocket for real-time updates",
+                        "Auth: JWT with 2-hour expiry, bay assignment enforcement"
+                    ]
+                },
+                {
+                    agent: "🔒 Security Specialist 1 (Architecture)",
+                    status: "✅ Approved",
+                    keyPoints: [
+                        "STRIDE threat model: Spoofing, Tampering, Repudiation, etc.",
+                        "Bus depot-specific: Tablet theft threat, depot access control",
+                        "RBAC: Technician (assigned bay), Supervisor, Admin",
+                        "JWT with bay assignment in token",
+                        "Audit logs: Login, fault changes, tool events, permission denials"
+                    ]
+                },
+                {
+                    agent: "🔒 Security Specialist 2 (Implementation)",
+                    status: "✅ Approved",
+                    keyPoints: [
+                        "bcrypt password hashing (10 rounds)",
+                        "Rate limiting: 100 req/15min",
+                        "Failed login lockout: 5 attempts, 15-min lockout",
+                        "Bay assignment middleware enforcement",
+                        "Security tests: SQL injection, XSS, auth bypass"
+                    ]
+                },
+                {
+                    agent: "📊 Data Analyst 1 (Dashboard/Viz)",
+                    status: "✅ Approved",
+                    keyPoints: [
+                        "Chart.js visualizations: Faults by system (Pie), by bay (Bar)",
+                        "Dashboard panels: Status, Activity, Faults table, Tool tracking",
+                        "Bus system breakdown: Brakes (35%), Engine (25%), Doors (22%), HVAC (12%), Electrical (6%)",
+                        "Security alerts: Off-hours access, tool overdue, repeated faults",
+                        "CSV export: Faults, tool usage, activity logs"
+                    ]
+                },
+                {
+                    agent: "📊 Data Analyst 2 (Analytics/Algorithms)",
+                    status: "✅ Approved",
+                    keyPoints: [
+                        "Descriptive analytics: Fault frequency by system/bus/repair time",
+                        "Anomaly detection: Off-hours access, tool overdue, repeated faults",
+                        "Predictive: Fault trends, maintenance scheduling suggestions",
+                        "Normal hours baseline: 06:00-22:00",
+                        "Algorithms: Simple statistical methods for TRL 3"
+                    ]
+                }
+            ];
+
+            if (plans.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No agent plans to display</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                    ${plans.map(plan => `
+                        <div style="background: rgba(255,255,255,0.03); border-radius: 10px; padding: 15px; border-left: 4px solid #00d4ff;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <strong style="color: #fff;">${plan.agent}</strong>
+                                <span style="font-size: 0.8em; color: #4ecdc4;">${plan.status}</span>
+                            </div>
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                ${plan.keyPoints.map(point => `
+                                    <li style="padding: 5px 0; padding-left: 20px; position: relative; color: #ccc; font-size: 0.9em;">
+                                        <span style="position: absolute; left: 0; color: #00d4ff;">•</span>
+                                        ${point}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
         // Auto-update every 30 seconds
         setInterval(() => {
             updateStats();
             updateLastUpdate();
             renderPendingActions();
+            renderAgentPlansSummary();
         }, 30000);
 
         // Initialize on load
