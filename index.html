@@ -543,6 +543,13 @@
             </div>
         </div>
 
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>🚨 Pending Actions</h2>
+            <div id="pending-actions">
+                <!-- Pending actions will be dynamically populated -->
+            </div>
+        </div>
+
         <div class="card">
             <h2>📊 Current Focus</h2>
             <div id="current-focus">
@@ -609,6 +616,20 @@
                 { id: 4, agent: "Sec2", author: "QA - Security", date: "19 Apr 2026", type: "recommendation", content: "1. Add expired JWT test case to checklist\n2. Document password complexity rules\n3. ✅ REVISED: Bus maintenance audit log events" },
                 { id: 5, agent: "DA1", author: "QA - Data Analytics", date: "19 Apr 2026", type: "recommendation", content: "1. Annotate security alert location on dashboard wireframe\n2. Document WebSocket fallback behavior\n3. ✅ REVISED: Dashboard shows bus system faults (brake/engine/door/HVAC)" },
                 { id: 6, agent: "DA2", author: "QA - Data Analytics", date: "19 Apr 2026", type: "recommendation", content: "1. Define baseline for normal hours (06:00-22:00 documented)\n2. Add fault resolution time as descriptive metric\n3. ✅ REVISED: Bus-specific anomaly detection (vehicle access, tool return times)" }
+            ],
+            pendingActions: [
+                {
+                    id: 1,
+                    title: "Approve Phase 2 Plans - Proceed to Phase 3?",
+                    date: "19 Apr 2026",
+                    description: "All 6 agents have submitted their revised Phase 2 Initial Plans for <strong>Bournemouth Buses</strong> context. QA has reviewed and approved all plans with recommendations documented. Your decision is needed to proceed.",
+                    deadline: "No rush - accuracy over speed",
+                    options: [
+                        { label: "✅ Option A: Approve All Plans → Start Phase 3", url: "options.html?action=approve-phase3" },
+                        { label: "🔧 Option B: Request Changes", url: "options.html?action=request-changes" },
+                        { label: "❓ Option C: Ask Questions First", url: "options.html?action=ask-questions" }
+                    ]
+                }
             ]
         };
 
@@ -618,6 +639,7 @@
             renderPhases();
             renderMilestones();
             renderFeedback();
+            renderPendingActions();
             updateStats();
             updateLastUpdate();
         }
@@ -759,10 +781,42 @@
             showNotification('Progress exported!');
         }
 
+        // Render Pending Actions
+        function renderPendingActions() {
+            const container = document.getElementById('pending-actions');
+            if (projectState.pendingActions.length === 0) {
+                container.innerHTML = '<p style="color: #4ecdc4; text-align: center; padding: 20px;">✓ No pending actions - all decisions made!</p>';
+                return;
+            }
+            container.innerHTML = projectState.pendingActions.map(action => `
+                <div class="feedback-item" style="background: rgba(255,230,109,0.15); border-left: 4px solid #ffe66d;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="color: #ffe66d;">🚨 ${action.title}</strong>
+                        <span style="font-size: 0.85em; color: #888;">${action.date}</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">${action.description}</div>
+                    <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <strong style="color: #00d4ff;">Options:</strong>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+                            ${action.options.map(opt => `
+                                <button class="btn" style="padding: 8px 16px; background: rgba(0,212,255,0.2); color: #00d4ff; border: 1px solid #00d4ff; border-radius: 5px; cursor: pointer; font-size: 0.9em;" onclick="window.open('${opt.url}', '_blank')">
+                                    ${opt.label}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85em; color: #888; margin-top: 5px;">
+                        ⏱️ Deadline: ${action.deadline || 'No deadline'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
         // Auto-update every 30 seconds
         setInterval(() => {
             updateStats();
             updateLastUpdate();
+            renderPendingActions();
         }, 30000);
 
         // Initialize on load
@@ -770,4 +824,3 @@
     </script>
 </body>
 </html>
-<!-- Force rebuild Sun Apr 19 21:21:19 UTC 2026 -->
