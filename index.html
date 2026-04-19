@@ -528,12 +528,20 @@
             </ul>
         </div>
 
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>📋 QA Feedback & Recommendations</h2>
+            <div id="feedback-container">
+                <!-- QA feedback will be dynamically populated -->
+            </div>
+        </div>
+
         <div class="card">
             <h2>📊 Current Focus</h2>
             <div id="current-focus">
-                <p style="color: #888; text-align: center; padding: 40px;">
-                    🎯 <strong>Phase 1: Project Setup & Briefing</strong><br><br>
-                    Waiting for user confirmation to begin agent work...
+                <p style="color: #e4e4e4; padding: 20px;">
+                    🎯 <strong>Phase 3: Architecture Design</strong><br><br>
+                    <span style="color: #4ecdc4;">✓ Phase 2 Complete: Initial Plans Approved</span><br>
+                    <span style="color: #888;">Next: System architecture, database design, security architecture, data flow diagrams<br>QA recommendations documented and ready to implement</span>
                 </p>
             </div>
         </div>
@@ -557,20 +565,20 @@
         // Project State
         let projectState = {
             agents: [
-                { id: 1, name: "Software Engineer 1", role: "AR/Frontend", type: "engineering", status: "pending", currentTask: "Review project brief", progress: 0 },
-                { id: 2, name: "Software Engineer 2", role: "Backend/Database", type: "engineering", status: "pending", currentTask: "Review project brief", progress: 0 },
-                { id: 3, name: "Security Specialist 1", role: "Security Architecture", type: "security", status: "pending", currentTask: "Review project brief", progress: 0 },
-                { id: 4, name: "Security Specialist 2", role: "Security Implementation", type: "security", status: "pending", currentTask: "Review project brief", progress: 0 },
-                { id: 5, name: "Data Analyst 1", role: "Dashboard/Visualization", type: "data", status: "pending", currentTask: "Review project brief", progress: 0 },
-                { id: 6, name: "Data Analyst 2", role: "Analytics/Algorithms", type: "data", status: "pending", currentTask: "Review project brief", progress: 0 },
-                { id: 7, name: "QA - Software Engineering", role: "Quality Assurance", type: "qa", status: "pending", currentTask: "Awaiting work to review", progress: 0 },
-                { id: 8, name: "QA - Security", role: "Quality Assurance", type: "qa", status: "pending", currentTask: "Awaiting work to review", progress: 0 },
-                { id: 9, name: "QA - Data Analytics", role: "Quality Assurance", type: "qa", status: "pending", currentTask: "Awaiting work to review", progress: 0 }
+                { id: 1, name: "Software Engineer 1", role: "AR/Frontend", type: "engineering", status: "approved", currentTask: "Initial Plan Approved", progress: 30, qaFeedback: "4 recommendations - London Underground context, .gltf format docs" },
+                { id: 2, name: "Software Engineer 2", role: "Backend/Database", type: "engineering", status: "approved", currentTask: "Initial Plan Approved", progress: 30, qaFeedback: "2 recommendations - API error format, DELETE endpoint" },
+                { id: 3, name: "Security Specialist 1", role: "Security Architecture", type: "security", status: "approved", currentTask: "Initial Plan Approved", progress: 30, qaFeedback: "3 recommendations - Physical threat, JWT expiry rationale" },
+                { id: 4, name: "Security Specialist 2", role: "Security Implementation", type: "security", status: "approved", currentTask: "Initial Plan Approved", progress: 30, qaFeedback: "2 recommendations - Expired JWT test, password rules" },
+                { id: 5, name: "Data Analyst 1", role: "Dashboard/Visualization", type: "data", status: "approved", currentTask: "Initial Plan Approved", progress: 30, qaFeedback: "3 recommendations - Security alerts location, WebSocket fallback" },
+                { id: 6, name: "Data Analyst 2", role: "Analytics/Algorithms", type: "data", status: "approved", currentTask: "Initial Plan Approved", progress: 30, qaFeedback: "2 recommendations - Normal hours baseline, resolution time metric" },
+                { id: 7, name: "QA - Software Engineering", role: "Quality Assurance", type: "qa", status: "completed", currentTask: "Phase 2 Review Complete", progress: 100 },
+                { id: 8, name: "QA - Security", role: "Quality Assurance", type: "qa", status: "completed", currentTask: "Phase 2 Review Complete", progress: 100 },
+                { id: 9, name: "QA - Data Analytics", role: "Quality Assurance", type: "qa", status: "completed", currentTask: "Phase 2 Review Complete", progress: 100 }
             ],
             phases: [
-                { id: 1, title: "Project Setup & Briefing", number: "Phase 1", tasks: ["Project brief review", "Requirements finalization", "Team structure setup", "Dashboard creation"], completed: true, current: true },
-                { id: 2, title: "Phase 2: Initial Plans", number: "Phase 2", tasks: ["Role-specific plans", "Tech stack decisions", "Architecture design", "QA Review"], completed: false, current: false },
-                { id: 3, title: "Phase 3: Architecture Design", number: "Phase 3", tasks: ["System architecture", "Database design", "Security architecture", "Data flow diagrams", "QA Review"], completed: false, current: false },
+                { id: 1, title: "Project Setup & Briefing", number: "Phase 1", tasks: ["Project brief review", "Requirements finalization", "Team structure setup", "Dashboard creation"], completed: true, current: false },
+                { id: 2, title: "Phase 2: Initial Plans", number: "Phase 2", tasks: ["6 role-specific plans created", "3 QA reviews completed", "All QA approvals received", "Recommendations documented"], completed: true, current: false },
+                { id: 3, title: "Phase 3: Architecture Design", number: "Phase 3", tasks: ["System architecture", "Database design", "Security architecture", "Data flow diagrams", "QA Review"], completed: false, current: true },
                 { id: 4, title: "Phase 4: Implementation", number: "Phase 4", tasks: ["AR frontend development", "Backend API development", "Security implementation", "Dashboard development", "QA Review"], completed: false, current: false },
                 { id: 5, title: "Phase 5: Integration", number: "Phase 5", tasks: ["Component integration", "End-to-end testing", "Documentation", "QA Review"], completed: false, current: false },
                 { id: 6, title: "Phase 6: Finalization", number: "Phase 6", tasks: ["Final report", "Presentation slides", "Video recording", "Individual contribution forms"], completed: false, current: false }
@@ -578,13 +586,21 @@
             milestones: [
                 { id: 1, title: "Project Kickoff", date: "19 Apr 2026", status: "completed", description: "Project brief received and understood" },
                 { id: 2, title: "Dashboard Created", date: "19 Apr 2026", status: "completed", description: "Project management dashboard available" },
-                { id: 3, title: "Initial Plans Approval", date: "Pending", status: "pending", description: "All 6 role agents submit initial plans" },
-                { id: 4, title: "Architecture Finalized", date: "Pending", status: "pending", description: "System architecture approved by all" },
-                { id: 5, title: "Prototype TRL 3", date: "Pending", status: "pending", description: "Functional prototype at Technology Readiness Level 3" },
-                { id: 6, title: "Documentation Complete", date: "Pending", status: "pending", description: "All report sections written" },
-                { id: 7, title: "Submission Ready", date: "12 May 2026", status: "pending", description: "All deliverables ready for submission" }
+                { id: 3, title: "Initial Plans Submitted", date: "19 Apr 2026", status: "completed", description: "All 6 role agents submitted initial plans" },
+                { id: 4, title: "QA Review Complete", date: "19 Apr 2026", status: "completed", description: "All 3 QA agents reviewed and approved plans" },
+                { id: 5, title: "Architecture Finalized", date: "Pending", status: "current", description: "System architecture approved by all" },
+                { id: 6, title: "Prototype TRL 3", date: "Pending", status: "pending", description: "Functional prototype at Technology Readiness Level 3" },
+                { id: 7, title: "Documentation Complete", date: "Pending", status: "pending", description: "All report sections written" },
+                { id: 8, title: "Submission Ready", date: "12 May 2026", status: "pending", description: "All deliverables ready for submission" }
             ],
-            feedback: []
+            feedback: [
+                { id: 1, agent: "SE1", author: "QA - Software Engineering", date: "19 Apr 2026", type: "recommendation", content: "1. UML diagrams should reference London Underground context specifically (Platform 3, not generic)\n2. Document which 3D format A-Frame supports best (.gltf)" },
+                { id: 2, agent: "SE2", author: "QA - Software Engineering", date: "19 Apr 2026", type: "recommendation", content: "1. Add API error response format documentation\n2. Document DELETE endpoint decision (implement or exclude)" },
+                { id: 3, agent: "Sec1", author: "QA - Security", date: "19 Apr 2026", type: "recommendation", content: "1. Add physical device theft to threat model\n2. Document why 2-hour JWT expiry was chosen" },
+                { id: 4, agent: "Sec2", author: "QA - Security", date: "19 Apr 2026", type: "recommendation", content: "1. Add expired JWT test case to checklist\n2. Document password complexity rules" },
+                { id: 5, agent: "DA1", author: "QA - Data Analytics", date: "19 Apr 2026", type: "recommendation", content: "1. Annotate security alert location on dashboard wireframe\n2. Document WebSocket fallback behavior" },
+                { id: 6, agent: "DA2", author: "QA - Data Analytics", date: "19 Apr 2026", type: "recommendation", content: "1. Define baseline for normal hours (06:00-22:00 documented)\n2. Add fault resolution time as descriptive metric" }
+            ]
         };
 
         // Initialize Dashboard
@@ -592,6 +608,7 @@
             renderAgents();
             renderPhases();
             renderMilestones();
+            renderFeedback();
             updateStats();
             updateLastUpdate();
         }
@@ -661,6 +678,22 @@
                         <span class="milestone-status ${milestone.status}">${milestone.status.toUpperCase()}</span>
                     </div>
                 </li>
+            `).join('');
+        }
+
+        // Render QA Feedback
+        function renderFeedback() {
+            const container = document.getElementById('feedback-container');
+            if (projectState.feedback.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No feedback yet</p>';
+                return;
+            }
+            container.innerHTML = projectState.feedback.map(fb => `
+                <div class="feedback-item">
+                    <div class="feedback-author">📝 ${fb.author} - ${fb.date}</div>
+                    <div><strong>Agent:</strong> ${fb.agent}</div>
+                    <div style="margin-top: 5px;">${fb.content}</div>
+                </div>
             `).join('');
         }
 
